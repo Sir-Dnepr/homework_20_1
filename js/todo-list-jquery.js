@@ -112,6 +112,8 @@ taskListElement.on('click', (event) => {
    const liElement = target.closest('li');
 
    if ($(liElement).attr('id')) {
+      const currentTaskIndex = getStorageItemIndexByTaskId($(liElement).attr('id'));
+
       if (target.nodeName === 'BUTTON') {
          if ($(liElement).attr('id')) {
             deleteStorageItem($(liElement).attr('id'));
@@ -120,18 +122,27 @@ taskListElement.on('click', (event) => {
          target.closest('li')?.remove();
       }
 
+      if (currentTaskIndex === null) {
+         return;
+      }
+
       if (target.nodeName === 'INPUT') {
-         const currentTaskIndex = getStorageItemIndexByTaskId($(liElement).attr('id'));
+         $(target).prop('checked')
+             ? $(liElement).addClass(COMPLETED_TASK_ITEM_CLASS)
+             : $(liElement).removeClass(COMPLETED_TASK_ITEM_CLASS);
 
-         if (currentTaskIndex !== null) {
-            $(target).prop('checked')
-                ? $(liElement).addClass(COMPLETED_TASK_ITEM_CLASS)
-                : $(liElement).removeClass(COMPLETED_TASK_ITEM_CLASS);
+         const items = getStorageItems();
+         items[currentTaskIndex].is_completed = $(target).prop('checked');
+         localStorage.setItem(STORAGE_TASKS_LIST_NAME, JSON.stringify(items));
+      }
 
-            const items = getStorageItems();
-            items[currentTaskIndex].is_completed = $(target).prop('checked');
-            localStorage.setItem(STORAGE_TASKS_LIST_NAME, JSON.stringify(items));
-         }
+      if (target.nodeName === 'SPAN') {
+         const modalEl = $('#task-modal');
+         const todoTaskModal = new bootstrap.Modal(modalEl);
+         const modalBody = modalEl.find('.modal-body');
+
+         modalBody.text(target?.textContent ?? '');
+         todoTaskModal.show();
       }
    }
 });

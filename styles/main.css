@@ -54,19 +54,23 @@ h1, h2 {
     margin-bottom: 10px;
 }
 
-.todo-item--checked {
+.todo-item--checked span {
     text-decoration: line-through;
 }
 
 .todo-item__description {
     flex-grow: 1;
     padding-left: 10px;
+    cursor: pointer;
 }
 
 .todo-item__delete {
     background: #0be69d;
     border: none;
     cursor: pointer;
-    width: 95px;
     padding: 10px;
+}
+
+ul {
+    padding-left: 0;
 }
